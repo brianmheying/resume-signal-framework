@@ -1,0 +1,21 @@
+# Render Blueprint — this is the actual shape of the production deploy config,
+# genericized only where it names the specific private service. Secrets are
+# never stored here; Render's dashboard holds the real values.
+services:
+  - type: web
+    name: resume-signal-framework
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt   # no-op: stdlib only, no dependencies
+    startCommand: python server.py
+    envVars:
+      - key: RSF_HOST
+        value: 0.0.0.0
+      - key: RSF_MODEL
+        value: claude-opus-4-8
+      - key: RSF_MODE
+        value: auto
+      - key: ANTHROPIC_API_KEY
+        sync: false   # set in the Render dashboard (secret)
+      - key: RSF_PASSWORD
+        sync: false   # optional shared-password gate; not set in current production
