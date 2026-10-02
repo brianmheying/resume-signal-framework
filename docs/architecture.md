@@ -21,8 +21,8 @@ sequenceDiagram
         S-->>U: 429, friendly limit message
     else allowed
         S->>A: structured-output request (JSON schema enforced)
-        A-->>S: truth_score, bucket, strategic_adjustment, ...
-        S->>S: compute desire_score + grade (deterministic, server-side)
+        A-->>S: truth_score, fit_factors, strategic_adjustment, ...
+        S->>S: derive bucket, desire_score + grade (deterministic, server-side)
         S-->>U: 200, full report
         S--)G: ledger write (async, non-blocking, best-effort)
         G-->>G: append row to Google Sheet

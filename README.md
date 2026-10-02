@@ -90,11 +90,18 @@ a Google Sheet as the entire "database" via a small Apps Script webhook.
   RSF did exactly that, and it produced advice that was directionally
   right but couldn't explain *why*. Splitting them was the single biggest
   architecture change RSF went through.
-- **The model never computes the final grade.** It outputs `truth_score`
-  and `strategic_adjustment` as independent numbers; the server adds them
-  and derives the letter grade. This keeps the arithmetic always correct
-  and auditable, and it's a deliberate boundary: the LLM reasons about
-  fit, the server owns the math.
+- **The model never computes a derived field — not the final grade, and not
+  Bucket either.** It outputs `truth_score` and `strategic_adjustment` as
+  independent numbers, and classifies a small set of structured fit factors;
+  the server adds the numbers to derive the letter grade, and separately
+  derives Bucket from the classifications. This keeps every derived value
+  always correct and auditable, and it's a deliberate boundary: the LLM
+  reasons about fit, the server owns the math. Bucket wasn't always on this
+  side of the boundary — an earlier version had the model output it as a
+  free-text field directly, and a model output isn't guaranteed to be a
+  consistent function of its input the way a fixed formula is: identical
+  classifications could still produce different free-text labels across
+  runs. Moving Bucket to the deterministic side fixed that.
 - **Zero server-side persistence.** No database, no per-user history. The
   candidate profile lives only in the browser. This wasn't the original
   design — an early version kept server-side history, and it was removed
